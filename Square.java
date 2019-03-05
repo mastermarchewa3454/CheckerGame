@@ -1,21 +1,31 @@
 import javax.swing.*;
+
+import com.sun.prism.Image;
+
 import java.awt.GridLayout;
-import javax.swing.JFrame;
 
-public class Square extends JFrame
-{
+public class Square extends JFrame {
    private JFrame frame = new JFrame();
-    private JPanel panel = new JPanel();
-    private JLabel[] blackButtons = new JLabel[4*8];
-    private JButton[] whiteButtons = new JButton[4*8];
+   private JPanel panel = new JPanel();
+   private JLabel[] blackButtons = new JLabel[4 * 8];
+   private JButton[] whiteButtons = new JButton[4 * 8];
 
-   public void getblackButtons(JLabel[] bb)
+   public JLabel[] getblackButtons()
    {
-      blackButtons = bb;
+      return blackButtons;
+
    }
-   public void getwhiteButtons(JButton[] wb)
+   public JButton[] getwhiteButtons()
    {
-      whiteButtons = wb;
+      return whiteButtons;
+   }
+   public void setblackButtons(JLabel[] bb)
+   {
+      this.blackButtons = bb;
+   } 
+   public void setwhiteButtons(JButton[] wb)
+   {
+      this.whiteButtons = wb;
    }
 
     public Square()
@@ -24,11 +34,13 @@ public class Square extends JFrame
         panel.setSize(1000,1000);
         for (int i=0; i<blackButtons.length; i++)
         {
-           blackButtons[i] = new JLabel();
+           ImageIcon im = new ImageIcon("empty2.png");
+           blackButtons[i] = new JLabel(im);
         }
         for (int i=0; i<whiteButtons.length; i++)
         {
-           whiteButtons[i] = new JButton();
+           ImageIcon im = new ImageIcon("empty.png");
+           whiteButtons[i] = new JButton(im);
         }
         for (int i=0; i<8; i++)
         {
@@ -37,7 +49,6 @@ public class Square extends JFrame
               for (int j=0; j<4; j++)
               {
                  panel.add(blackButtons[4*i +j]);
-                 
                  panel.add(whiteButtons[4*i +j]);
               }
            }
