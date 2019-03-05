@@ -37,6 +37,7 @@ public class Square extends JFrame
               for (int j=0; j<4; j++)
               {
                  panel.add(blackButtons[4*i +j]);
+                 
                  panel.add(whiteButtons[4*i +j]);
               }
            }
