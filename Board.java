@@ -3,49 +3,11 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 public class Board extends JFrame
 {
-    private JFrame frame = new JFrame();
-    private JPanel panel = new JPanel();
-    private JLabel[] blackButtons = new JLabel[4*8];
-    private JButton[] whiteButtons = new JButton[4*8];
-    public Board()
-    {
-        panel.setLayout(new GridLayout(8,8));
-        panel.setSize(1000,1000);
-        for (int i=0; i<blackButtons.length; i++)
-        {
-           blackButtons[i] = new JLabel();
-        }
-        for (int i=0; i<whiteButtons.length; i++)
-        {
-           whiteButtons[i] = new JButton();
-        }
-        for (int i=0; i<8; i++)
-        {
-           if(i%2 ==0)
-           {
-              for (int j=0; j<4; j++)
-              {
-                 panel.add(blackButtons[4*i +j]);
-                 panel.add(whiteButtons[4*i +j]);
-              }
-           }
-           else
-           {
-              for (int j=0; j<4; j++)
-              {
-                 panel.add(whiteButtons[4*i +j]);
-                 panel.add(blackButtons[4*i +j]);
-              }
-           }
-        }
-        super.add(panel);
-     } 
-
     public static void main (String [] args)
     {
-        Board board = new Board();
-        board.setSize(1000,1000);
-        board.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        board.setVisible(true);
+        Square square = new Square();
+        square.setSize(1000,1000);
+        square.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        square.setVisible(true);
     }
 }
