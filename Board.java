@@ -13,8 +13,8 @@ public class Board extends JFrame
       JButton[] whiteButtons = square.getwhiteButtons();
       panel.setLayout(new GridLayout(width, width));
       panel.setVisible(true);
-      square.setSquare();
       setSize(600, 600);
+      //square.setSquare();
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
       for (int i = 0; i < width; i++) 
@@ -41,7 +41,7 @@ public class Board extends JFrame
       }
       super.add(panel);
    }
-   
+
     public static void main (String [] args)
     {
         Board board = new Board();
