@@ -36,28 +36,28 @@ public class Square2
    public void setSquare() 
    {
      
-      for (int i = 0; i < blackButtons[i].length; i++) 
+      for (int i = 0; i < 8; i++) 
       {
-          for (int j=0; j<blackButtons[j].length; j++)
+          for (int j=0; j<4; j++)
           {
             ImageIcon im = new ImageIcon("empty2.png");
             blackButtons[i][j] = new JLabel(im);
           }
          
       }
-      for (int i = 0; i < whiteButtons[i].length; i++) 
+      for (int i = 0; i < 8; i++) 
       {
-        for (int j=0; j< whiteButtons[j].length; j++)
+        for (int j=0; j< 4; j++)
         {
              ImageIcon im = new ImageIcon("empty.png");
              whiteButtons[i][j] = new JButton(im);
-             if(i >19)
+             if(i >=5)
              {
-                WhitePieces(i);
+                WhitePieces(i,j);
              }
-             if (i <12)
+             if (i <=2)
              {
-                RedPieces(i);
+                RedPieces(i,j);
              }
         }
          
@@ -65,21 +65,16 @@ public class Square2
       }
    }
 
-   public void WhitePieces(int i)
+   public void WhitePieces(int i, int j)
    {
          ImageIcon image = new ImageIcon("white.png");
          whiteButtons[i][j].setIcon(image);
       }
-   public void RedPieces(int i)
+   public void RedPieces(int i, int j)
    {
          ImageIcon image = new ImageIcon("red.png");
          whiteButtons[i][j].setIcon(image);
          
    }
    
-   public void moveTo(JButton[] whiteButtons)
-   {
-      
-
-   }
 }

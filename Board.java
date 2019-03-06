@@ -8,13 +8,13 @@ public class Board extends JFrame
    private int width = 8;
    public Board()
    {
-      Square square = new Square();
-      JLabel[] blackButtons = square.getblackButtons();
-      JButton[] whiteButtons = square.getwhiteButtons();
+      Square2 square2 = new Square2();
+      JLabel[][] blackButtons = square2.getblackButtons();
+      JButton[][] whiteButtons = square2.getwhiteButtons();
       panel.setLayout(new GridLayout(width, width));
       panel.setVisible(true);
       setSize(600, 600);
-      //square.setSquare();
+      square2.setSquare();
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
       for (int i = 0; i < width; i++) 
@@ -24,8 +24,8 @@ public class Board extends JFrame
          {
             for (int j = 0; j < 4; j++) 
             {
-               panel.add(blackButtons[4 * i + j]);
-               panel.add(whiteButtons[4 * i + j]);  
+               panel.add(blackButtons[i][j]);
+               panel.add(whiteButtons[i][j]);  
             }
          } 
          else 
@@ -33,8 +33,8 @@ public class Board extends JFrame
             for (int j = 0; j < 4; j++) 
             {
                
-               panel.add(whiteButtons[4 * i + j]);
-               panel.add(blackButtons[4 * i + j]);
+               panel.add(whiteButtons[i][j]);
+               panel.add(blackButtons[i][j]);
                
             }
          }

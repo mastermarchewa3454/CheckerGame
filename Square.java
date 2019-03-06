@@ -65,9 +65,5 @@ public class Square
          
    }
    
-   public void moveTo(JButton[] whiteButtons)
-   {
-      
-
-   }
+  
 }
