@@ -8,13 +8,13 @@ public class Board extends JFrame
    private int width = 8;
    public Board()
    {
-      Square2 square2 = new Square2();
-      JLabel[][] blackButtons = square2.getblackButtons();
-      JButton[][] whiteButtons = square2.getwhiteButtons();
+      Square square = new Square();
+      JLabel[][] blackButtons = square.getblackButtons();
+      JButton[][] whiteButtons = square.getwhiteButtons();
       panel.setLayout(new GridLayout(width, width));
       panel.setVisible(true);
       setSize(600, 600);
-      square2.setSquare();
+      square.setSquare();
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setVisible(true);
       for (int i = 0; i < width; i++) 
