@@ -20,6 +20,7 @@ public class Square implements ActionListener
    private static final int EMPTY = 0, RED = 1, RED_KING = 2, WHITE = 3, WHITE_KING = 4;
    private boolean canPlay= false; 
    private int tempI, tempJ;
+   private int whoIsPlay = WHITE; 
    // tempI is a an old address i
    // tempJ is a an old address j
 // 1 -empty 2- white 3 - red 4 - selected 5- whiteking 6 -
@@ -40,7 +41,7 @@ public class Square implements ActionListener
    public void setwhiteButtons(JButton[][] wb) {
       this.whiteButtons = wb;
    }
-
+   
    public void setSquare() 
    {
      
@@ -78,9 +79,7 @@ public class Square implements ActionListener
          {
              ImageIcon image = new ImageIcon("white.png");
              whiteButtons[i][j].setIcon(image);
-             positionChecker[i][j] = WHITE;
-             
-             
+             positionChecker[i][j] = WHITE;  
          }
       if (i<=2)
          {
@@ -88,8 +87,6 @@ public class Square implements ActionListener
             whiteButtons[i][j].setIcon(image);
             positionChecker[i][j] = RED;
          }
-      
-       
    }
    public void actionPerformed(ActionEvent e) 
    {
@@ -100,7 +97,7 @@ public class Square implements ActionListener
          {
             if (src==whiteButtons[i][j] ) 
             {
-               if (canPlay == false)
+               if (canPlay == false && checkPlayer(i,j) == true)
                {
                   resetAvailablePlaces();
                   tempI = i;
@@ -109,7 +106,7 @@ public class Square implements ActionListener
                }
                else if (canPlay == true && availablePlace[i][j] == 1)
                {
-                  makeMove(i,j, tempI, tempJ);
+                  moveTo(i,j, tempI, tempJ);
                }
                else if (canPlay == true && availablePlace[i][j] ==0)
                {
@@ -118,6 +115,32 @@ public class Square implements ActionListener
             }
          }
    
+      }
+   }
+   public void changePlayer()
+   {
+      if(whoIsPlay == RED)
+      {
+         whoIsPlay = WHITE;
+      }
+      else if (whoIsPlay == WHITE)
+      {
+         whoIsPlay = RED;
+      }
+   }
+   public boolean checkPlayer(int i, int j)
+   {
+      if(whoIsPlay == RED && positionChecker[i][j] == RED )
+      {
+         return true;
+      }
+      if(whoIsPlay == WHITE && positionChecker[i][j] == WHITE )
+      {
+         return true;
+      }
+      else
+      {
+         return false;
       }
    }
    public void paint()
@@ -253,11 +276,12 @@ public class Square implements ActionListener
       }
       paint();
    }
-   public void makeMove(int i, int j, int tempI, int tempJ)
+   public void moveTo(int i, int j, int tempI, int tempJ)
    {
-      int x = positionChecker[tempI][tempJ];
-      positionChecker[i][j] = x;
+      int temp = positionChecker[tempI][tempJ];
+      positionChecker[i][j] = temp;
       positionChecker[tempI][tempJ] = EMPTY;
       resetAvailablePlaces();
+      changePlayer();
    }
 }
