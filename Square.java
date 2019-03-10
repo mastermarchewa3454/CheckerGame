@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+
+import com.sun.beans.util.Cache.Kind;
 import com.sun.prism.Image;
 import java.awt.event.*;
 import java.awt.GridLayout;
@@ -16,7 +18,10 @@ public class Square implements ActionListener
    private int[][] positionChecker = new int[8][4];
    private int[][] availablePlace = new int [8][4];
    private static final int EMPTY = 0, RED = 1, RED_KING = 2, WHITE = 3, WHITE_KING = 4;
-   private boolean inPlay = false; 
+   private boolean canPlay= false; 
+   private int tempI, tempJ;
+   // tempI is a an old address i
+   // tempJ is a an old address j
 // 1 -empty 2- white 3 - red 4 - selected 5- whiteking 6 -
  
    public JLabel[][] getblackButtons() {
@@ -55,12 +60,11 @@ public class Square implements ActionListener
              ImageIcon im = new ImageIcon("empty.png");
              whiteButtons[i][j] = new JButton(im);
              positionChecker[i][j] = EMPTY;
-             
              if(i >=5 || i<=2)
              {
                 setPieces(i,j);
              }
-             
+             whiteButtons[i][j].addActionListener(this);
         }
          
          
@@ -74,16 +78,18 @@ public class Square implements ActionListener
          {
              ImageIcon image = new ImageIcon("white.png");
              whiteButtons[i][j].setIcon(image);
-             whiteButtons[i][j].addActionListener(this);
              positionChecker[i][j] = WHITE;
+             
+             
          }
       if (i<=2)
          {
             ImageIcon image = new ImageIcon("red.png");
             whiteButtons[i][j].setIcon(image);
-            whiteButtons[i][j].addActionListener(this);
             positionChecker[i][j] = RED;
-         } 
+         }
+      
+       
    }
    public void actionPerformed(ActionEvent e) 
    {
@@ -94,39 +100,61 @@ public class Square implements ActionListener
          {
             if (src==whiteButtons[i][j] ) 
             {
-               moveTo(i,j);
+               if (canPlay == false)
+               {
+                  resetAvailablePlaces();
+                  tempI = i;
+                  tempJ = j; 
+                  getAvailablePlaces(i,j);
+               }
+               else if (canPlay == true && availablePlace[i][j] == 1)
+               {
+                  makeMove(i,j, tempI, tempJ);
+               }
+               else if (canPlay == true && availablePlace[i][j] ==0)
+               {
+                  resetAvailablePlaces();
+               }
             }
          }
    
       }
    }
-   public void moveTo(int i, int j)
-   { 
-      resetAvailablePlaces();
-      getAvailablePlaces(i,j);
-   }
-   public void paintAvailablePlaces()
+   public void paint()
    {
       for (int i = 0; i < 8; i++) 
       {
          for (int j=0; j< 4; j++)
          {
+            
             if (availablePlace[i][j] == 1)
             {
                ImageIcon image = new ImageIcon("selected.png");
                whiteButtons[i][j].setIcon(image);
             }
-            if (availablePlace[i][j] == 0 && positionChecker[i][j] == EMPTY)
+            else if(positionChecker[i][j] == RED)
+            {
+               ImageIcon image = new ImageIcon("red.png");
+               whiteButtons[i][j].setIcon(image);
+            }
+            else if (positionChecker[i][j] == WHITE)
+            {
+               ImageIcon image = new ImageIcon("white.png");
+               whiteButtons[i][j].setIcon(image);
+            }
+            else if(positionChecker[i][j] == EMPTY)
             {
                ImageIcon image = new ImageIcon("empty.png");
                whiteButtons[i][j].setIcon(image);
             }
-
          }
       }
    }
    public void resetAvailablePlaces()
    {
+      tempI=0;
+      tempJ=0;
+      canPlay = false;
       for (int i = 0; i < 8; i++) 
       {
          for (int j=0; j< 4; j++)
@@ -134,16 +162,18 @@ public class Square implements ActionListener
                availablePlace[i][j] = 0;
          }
       }
-      paintAvailablePlaces();
+      
+      paint();
    }
    
    public void getAvailablePlaces(int i, int j)
    {
+      canPlay = true;
       if (positionChecker[i][j] == RED)
             {
                movingDown(i,j);
             }
-         if (positionChecker[i][j] == WHITE)
+      if (positionChecker[i][j] == WHITE)
             {
                movingUp(i,j);
             }
@@ -155,14 +185,14 @@ public class Square implements ActionListener
          if (positionChecker[i+1][j] == EMPTY)
          {
             availablePlace[i+1][j] =1;
-            inPlay = true;
          }
          if (j!=3)
          {
             if (positionChecker[i+1][j+1] == EMPTY)
             {
+               
                availablePlace[i+1][j+1] =1;
-               inPlay = true;
+             
             }
          }
          
@@ -171,43 +201,20 @@ public class Square implements ActionListener
       {
          if (positionChecker[i+1][j] == EMPTY)
          {
-            availablePlace[i+1][j] =1;
-            inPlay = true;
             
+            availablePlace[i+1][j] =1;      
          }
          if(j!=3)
          {
             if (positionChecker[i+1][j-1] == EMPTY)
             {
+               
                availablePlace[i+1][j-1] =1;
-               inPlay = true;
             }
          }
          
       }
-      paintAvailablePlaces();
-        /*       if(availablePlace[i+1][j]== 0)
-               {
-                  ImageIcon image = new ImageIcon("selected.png");
-                  whiteButtons[i+1][j].setIcon(image);
-               }
-               if (availablePlace[i+1][j+1] ==0)
-               {
-                  ImageIcon image = new ImageIcon("selected.png");
-                  whiteButtons[i+1][j+1].setIcon(image);
-               }
-               else if (availablePlace[i+1][j-1] == 0)
-               {
-                  ImageIcon image = new ImageIcon("selected.png");
-                  whiteButtons[i+1][j-1].setIcon(image);
-               }
-               else if (availablePlace[i+1][j+2] == 0)
-               {
-                  ImageIcon image = new ImageIcon("selected.png");
-                  whiteButtons[i+1][j+2].setIcon(image);
-               }
-               */
-
+      paint();
    }
    public void movingUp(int i, int j)
    {
@@ -215,12 +222,14 @@ public class Square implements ActionListener
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
+            
             availablePlace[i-1][j] =1;
          }
          if(j!=3)
          {
             if (positionChecker[i-1][j+1] == EMPTY)
             {
+               
                availablePlace[i-1][j+1] =1;
             }
          }
@@ -229,6 +238,7 @@ public class Square implements ActionListener
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
+           
             availablePlace[i-1][j] =1;
             
          }
@@ -236,12 +246,18 @@ public class Square implements ActionListener
          {
             if (positionChecker[i-1][j-1] == EMPTY)
             {
+
                availablePlace[i-1][j-1] =1;
             }
          }
-         
-         
       }
-      paintAvailablePlaces();
+      paint();
+   }
+   public void makeMove(int i, int j, int tempI, int tempJ)
+   {
+      int x = positionChecker[tempI][tempJ];
+      positionChecker[i][j] = x;
+      positionChecker[tempI][tempJ] = EMPTY;
+      resetAvailablePlaces();
    }
 }
