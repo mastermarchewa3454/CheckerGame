@@ -12,6 +12,7 @@ public class Board extends JFrame
       JLabel[][] blackButtons = square.getblackButtons();
       JButton[][] whiteButtons = square.getwhiteButtons();
       panel.setLayout(new GridLayout(width, width));
+      setResizable(false);
       panel.setVisible(true);
       setSize(700, 700);
       square.setSquare();

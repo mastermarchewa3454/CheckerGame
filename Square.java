@@ -169,6 +169,16 @@ public class Square implements ActionListener
                whiteButtons[i][j].setIcon(image);
                RedWin = false;
             }
+            else if(positionChecker[i][j] == WHITE_KING)
+            {
+               ImageIcon image = new ImageIcon("white-king.png");
+               whiteButtons[i][j].setIcon(image);
+            }
+            else if (positionChecker[i][j] == RED_KING)
+            {
+               ImageIcon image = new ImageIcon("red-king.png");
+               whiteButtons[i][j].setIcon(image);
+            }
             else if(positionChecker[i][j] == EMPTY)
             {
                ImageIcon image = new ImageIcon("empty.png");
@@ -346,6 +356,7 @@ public class Square implements ActionListener
       removePiece();
       WhiteWin = true;
       RedWin = true;
+      checkKing(i,j);
       resetAvailablePlaces();
       checkWinning();
       changePlayer();
@@ -375,40 +386,51 @@ public class Square implements ActionListener
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j+1] == RED && j!=3)
+                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j+1] == RED )
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE && j!=0)
+                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE )
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE && j!=0 && i!=0)
+                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE)
                   {
                   positionChecker[i][j] = EMPTY;
                   }
                }
                if(i%2 ==1)
                {
-                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED && i!=7 )
+                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED )
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j-1] == RED && j!=0 && i!=7)
+                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j-1] == RED )
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE && i!=0)
+                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE)
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE && j!=0 && i!=0)
+                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE )
                   {
                   positionChecker[i][j] = EMPTY;
                   }
                } 
             }
          }
+      }
+   }
+   public void checkKing(int i, int j)
+   {
+      if(positionChecker[i][j] == RED && i==7)
+      {
+         positionChecker[i][j] = WHITE_KING;
+      }
+      if (positionChecker[i][j] == WHITE && i==0)
+      {
+         positionChecker[i][j] = RED_KING;
       }
    }
    public void checkWinning()
