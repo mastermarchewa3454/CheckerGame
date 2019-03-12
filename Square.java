@@ -17,8 +17,11 @@ public class Square implements ActionListener
    private JButton[][] whiteButtons = new JButton[8][4];
    private int[][] positionChecker = new int[8][4];
    private int[][] availablePlace = new int [8][4];
+   private int[][] removeElement = new int [8][4];
    private static final int EMPTY = 0, RED = 1, RED_KING = 2, WHITE = 3, WHITE_KING = 4;
    private boolean canPlay= false; 
+   private boolean WhiteWin = true;
+   private boolean RedWin = true;
    private int tempI, tempJ;
    private int whoIsPlay = WHITE; 
    // tempI is a an old address i
@@ -149,7 +152,6 @@ public class Square implements ActionListener
       {
          for (int j=0; j< 4; j++)
          {
-            
             if (availablePlace[i][j] == 1)
             {
                ImageIcon image = new ImageIcon("selected.png");
@@ -159,11 +161,13 @@ public class Square implements ActionListener
             {
                ImageIcon image = new ImageIcon("red.png");
                whiteButtons[i][j].setIcon(image);
+               WhiteWin = false;
             }
             else if (positionChecker[i][j] == WHITE)
             {
                ImageIcon image = new ImageIcon("white.png");
                whiteButtons[i][j].setIcon(image);
+               RedWin = false;
             }
             else if(positionChecker[i][j] == EMPTY)
             {
@@ -183,9 +187,9 @@ public class Square implements ActionListener
          for (int j=0; j< 4; j++)
          {
                availablePlace[i][j] = 0;
+               removeElement[i][j] =0;
          }
       }
-      
       paint();
    }
    
@@ -209,13 +213,28 @@ public class Square implements ActionListener
          {
             availablePlace[i+1][j] =1;
          }
+         if (positionChecker[i+1][j] == WHITE)
+         {
+            if (j!=0)
+            {
+               if(canJump(i+2,j-1) == true)
+               {
+                  removeElement[i+1][j] =1;
+               }
+            }  
+         }
          if (j!=3)
          {
             if (positionChecker[i+1][j+1] == EMPTY)
             {
-               
                availablePlace[i+1][j+1] =1;
-             
+            }
+            if (positionChecker[i+1][j+1] == WHITE)
+            {
+               if(canJump(i+2,j+1) == true)
+               {
+                  removeElement[i+1][j+1] =1;
+               }
             }
          }
          
@@ -224,16 +243,32 @@ public class Square implements ActionListener
       {
          if (positionChecker[i+1][j] == EMPTY)
          {
-            
             availablePlace[i+1][j] =1;      
          }
-         if(j!=3)
+         if(positionChecker[i+1][j] == WHITE)
+         {
+            if(j!=3)
+            {
+               if(canJump(i+2,j+1) == true)
+               {
+                  removeElement[i+1][j] = 1;
+               }
+            }
+            
+         }
+         if(j!=0)
          {
             if (positionChecker[i+1][j-1] == EMPTY)
             {
-               
                availablePlace[i+1][j-1] =1;
             }
+            if (positionChecker[i+1][j-1] == WHITE)
+            {
+               if(canJump(i+2,j-1) == true);
+               {
+                  removeElement[i+1][j-1] =1;
+               }
+            } 
          }
          
       }
@@ -245,32 +280,59 @@ public class Square implements ActionListener
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
-            
             availablePlace[i-1][j] =1;
          }
-         if(j!=3)
+         if (positionChecker[i-1][j] == RED)
          {
-            if (positionChecker[i-1][j+1] == EMPTY)
+            if(canJump(i-2,j-1) == true)
             {
-               
-               availablePlace[i-1][j+1] =1;
+               removeElement[i-1][j] =1;
             }
          }
+         if(j!=3)
+            {
+               if (positionChecker[i-1][j+1] == EMPTY)
+               {
+                  availablePlace[i-1][j+1] =1;
+               }
+               if (positionChecker[i-1][j+1] == RED)
+               {
+                  if(canJump(i-2,j+1) == true)
+                  {
+                     removeElement[i-1][j+1] =1;
+                  }
+               }
+            }
       }
       if (i%2 == 1)
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
-           
-            availablePlace[i-1][j] =1;
+            availablePlace[i-1][j] =1;  
+         }
+         else if (positionChecker[i-1][j] == RED)
+         {
+            if (j!=3)
+            {
+               if(canJump(i-2,j+1) ==true)
+               {
+                  removeElement[i-1][j] = 1;
+               }
+            }
             
          }
          if (j!=0) 
          {
             if (positionChecker[i-1][j-1] == EMPTY)
             {
-
                availablePlace[i-1][j-1] =1;
+            }
+            else if (positionChecker[i-1][j-1] == RED)
+            {
+               if(canJump(i-2,j-1) == true)
+               {
+                  removeElement[i-1][j-1] = 1;
+               }
             }
          }
       }
@@ -281,7 +343,80 @@ public class Square implements ActionListener
       int temp = positionChecker[tempI][tempJ];
       positionChecker[i][j] = temp;
       positionChecker[tempI][tempJ] = EMPTY;
+      removePiece();
       resetAvailablePlaces();
+      checkWinning();
+      {
+         //endgame;
+      }
       changePlayer();
+   }
+   public boolean canJump(int i, int j)
+   {
+      if(positionChecker[i][j] == 0 && i<8 && i>=0 && j>=0 && j<4)
+      {
+         availablePlace[i][j] = 1;
+         return true;
+      }
+      else
+      return false;
+
+   }
+   public void removePiece()
+   {
+      for (int i=0; i<8; i++)
+      {
+         for(int j=0; j<4; j++)
+         {
+            if (removeElement[i][j] ==1)
+            {
+               if(i%2 ==0)
+               {
+                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED )
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j+1] == RED && j!=3)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE && j!=0)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE && j!=0 && i!=0)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+               }
+               if(i%2 ==1)
+               {
+                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED && i!=7 )
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j-1] == RED && j!=0 && i!=7)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE && i!=0)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE && j!=0 && i!=0)
+                  {
+                  positionChecker[i][j] = EMPTY;
+                  }
+               } 
+            }
+         }
+      }
+   }
+   public void checkWinning()
+   {
+      if(RedWin == true || WhiteWin == true)
+      {
+         // show the screen of winning game
+      }
    }
 }
