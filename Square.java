@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import javax.swing.JOptionPane;
 public class Square implements ActionListener
 {
    
@@ -20,8 +20,8 @@ public class Square implements ActionListener
    private int[][] removeElement = new int [8][4];
    private static final int EMPTY = 0, RED = 1, RED_KING = 2, WHITE = 3, WHITE_KING = 4;
    private boolean canPlay= false; 
-   private boolean WhiteWin = true;
-   private boolean RedWin = true;
+   private boolean WhiteWin = false;
+   private boolean RedWin = false;
    private int tempI, tempJ;
    private int whoIsPlay = WHITE; 
    // tempI is a an old address i
@@ -344,11 +344,10 @@ public class Square implements ActionListener
       positionChecker[i][j] = temp;
       positionChecker[tempI][tempJ] = EMPTY;
       removePiece();
+      WhiteWin = true;
+      RedWin = true;
       resetAvailablePlaces();
       checkWinning();
-      {
-         //endgame;
-      }
       changePlayer();
    }
    public boolean canJump(int i, int j)
@@ -414,9 +413,14 @@ public class Square implements ActionListener
    }
    public void checkWinning()
    {
-      if(RedWin == true || WhiteWin == true)
+      
+      if(RedWin == true)
       {
-         // show the screen of winning game
+         JOptionPane.showMessageDialog(null, "Game over, red won");
+      }
+      if(WhiteWin == true)
+      {
+         JOptionPane.showMessageDialog(null, "Game over, white won");
       }
    }
 }
