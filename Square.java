@@ -1,14 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
-
-import com.sun.beans.util.Cache.Kind;
-import com.sun.prism.Image;
 import java.awt.event.*;
-import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JOptionPane;
 public class Square implements ActionListener
 {
@@ -17,8 +9,8 @@ public class Square implements ActionListener
 	 *
 	 */
 	
-	private static final int _8 = 8;
-private JLabel[][] blackButtons = new JLabel[8][4];
+	
+   private JLabel[][] blackButtons = new JLabel[8][4];
    private JButton[][] whiteButtons = new JButton[8][4];
    private int[][] positionChecker = new int[8][4];
    private int[][] availablePlace = new int [8][4];
@@ -29,10 +21,8 @@ private JLabel[][] blackButtons = new JLabel[8][4];
    private boolean RedWin = false;
    private boolean didJump = false;
    private boolean multiJump = false;
-   private int tempI, tempJ;
+   private int tempI, tempJ;  // tempI, tempJ are old addresses of i and j
    private int whoIsPlay = WHITE; 
-   // tempI is a an old address i
-   // tempJ is a an old address j
 // 1 -empty 2- white 3 - red 4 - selected 5- whiteking 6 -
  
    public JLabel[][] getblackButtons() {
@@ -229,6 +219,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
             {
                movingDown(i, j);
                movingUp(i,j);
+               
             }
       paint();
    }
@@ -236,13 +227,13 @@ private JLabel[][] blackButtons = new JLabel[8][4];
    {
       canPlay = true;
       if (positionChecker[i][j] == RED)
-            {
-               movingDown(i,j);
-            }
+      {
+         movingDown(i,j);
+      }
       if (positionChecker[i][j] == WHITE)
-            {
-               movingUp(i,j);
-            }
+      {
+         movingUp(i,j);
+      }
       if(positionChecker[i][j] == RED_KING || positionChecker[i][j] == WHITE_KING )
       {
          movingDown(i, j);
@@ -273,7 +264,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
             {
                availablePlace[i+1][j+1] =1;
             }
-            if (positionChecker[i+1][j+1] == WHITE || positionChecker[i+1][j] == WHITE_KING)
+            if (positionChecker[i+1][j+1] == WHITE || positionChecker[i+1][j+1] == WHITE_KING)
             {
                if(canJump(i+2,j+1) == true)
                {
@@ -304,7 +295,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
             {
                availablePlace[i+1][j-1] =1;
             }
-            if (positionChecker[i+1][j-1] == WHITE || positionChecker[i+1][j] == WHITE_KING)
+            if (positionChecker[i+1][j-1] == WHITE || positionChecker[i+1][j-1] == WHITE_KING)
             {
                if(canJump(i+2,j-1) == true)
                {
@@ -322,7 +313,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
          {
             availablePlace[i-1][j] =1;
          }
-         if (positionChecker[i-1][j] == RED || positionChecker[i][j] == RED_KING)
+         if (positionChecker[i-1][j] == RED || positionChecker[i-1][j] == RED_KING)
          {
             if(canJump(i-2,j-1) == true)
             {
@@ -335,7 +326,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
                {
                   availablePlace[i-1][j+1] =1;
                }
-               if (positionChecker[i-1][j+1] == RED || positionChecker[i][j] == RED_KING)
+               if (positionChecker[i-1][j+1] == RED || positionChecker[i-1][j+1] == RED_KING)
                {
                   if(canJump(i-2,j+1) == true)
                   {
@@ -350,7 +341,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
          {
             availablePlace[i-1][j] =1;  
          }
-         if (positionChecker[i-1][j] == RED || positionChecker[i][j] == RED_KING)
+         if (positionChecker[i-1][j] == RED || positionChecker[i-1][j] == RED_KING)
          {
             if (j!=3)
             {
@@ -366,7 +357,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
             {
                availablePlace[i-1][j-1] =1;
             }
-            if (positionChecker[i-1][j-1] == RED || positionChecker[i][j] == RED_KING)
+            if (positionChecker[i-1][j-1] == RED || positionChecker[i-1][j-1] == RED_KING)
             {
                if(canJump(i-2,j-1) == true)
                {
@@ -376,79 +367,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
          }
       }
    }
-   /*
-   public void kingMoves1(int i, int j)
-   {
-      while(i!=7)
-      {
-         i++;
-         kingMovesAvailablePlaces(i, j);
-         if(j!=3 && i%2 ==0)
-         {
-            j++;
-         }
-         
-      }
-   }
-   public void kingMoves2(int i, int j)
-   {
-      while(i!=7)
-      {
-         i++;
-         kingMovesAvailablePlaces(i, j);
-         if(j!=0 && i%2 ==0)
-         {
-            j--;
-         }
-         
-      }
-   }
-   public void kingMoves3(int i, int j)
-   {
-      while(i!=0)
-      {
-         i--;
-         kingMovesAvailablePlaces(i, j);
-         if(j!=0 && i%2 ==0)
-         {
-            j--;
-         }
-         
-      }
-   }
-   public void kingMoves4(int i, int j)
-   {
-      while(i!=0)
-      {
-         i--;
-         kingMovesAvailablePlaces(i, j);
-         if(j!=3 && i%2 ==0)
-         {
-            j++;
-         }
-      }
-   }
-   public void kingMovesAvailablePlaces(int i, int j)
-   {
-      
-         if(positionChecker[i][j] == EMPTY)
-            {
-            availablePlace[i][j] = 1;
-            }
-      
-        
-         if(positionChecker[i][j-1] == EMPTY)
-            {
-               availablePlace[i][j-1] = 1;
-            }
-         
-         if(positionChecker[i][j+1] == EMPTY)
-            {
-            availablePlace[i][j+1] = 1;
-            }
-         
-   }
-   */
+   
    public void moveTo(int i, int j, int tempI, int tempJ)
    {
       int temp = positionChecker[tempI][tempJ];
@@ -466,7 +385,7 @@ private JLabel[][] blackButtons = new JLabel[8][4];
    }
    public boolean canJump(int i, int j)
    {
-      if(positionChecker[i][j] == 0 && i<_8 && i>=0 && j>=0 && j<4)
+      if(positionChecker[i][j] == 0 && i<8 && i>=0 && j>=0 && j<4)
       {
          availablePlace[i][j] = 1;
          multiJump = true;
@@ -487,38 +406,38 @@ private JLabel[][] blackButtons = new JLabel[8][4];
             {
                if(i%2 ==0)
                {
-                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED )
+                  if((positionChecker[i][j] == WHITE || positionChecker[i][j] == WHITE_KING) && (positionChecker[i+1][j] == RED || positionChecker[i+1][j] == RED_KING ))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j+1] == RED )
+                  else if((positionChecker[i][j] == WHITE || positionChecker[i][j] == WHITE_KING)  && (positionChecker[i+1][j+1] == RED || positionChecker[i+1][j+1] == RED_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE )
+                  else if ((positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING) && (positionChecker[i-1][j] == WHITE || positionChecker[i-1][j] == WHITE_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE)
+                  else if((positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING)  && (positionChecker[i-1][j+1] == WHITE || positionChecker[i-1][j+1] == WHITE_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
                }
                if(i%2 ==1)
                {
-                  if(positionChecker[i][j] == WHITE && positionChecker[i+1][j] == RED )
+                  if((positionChecker[i][j] == WHITE || positionChecker[i][j] == WHITE_KING)  && (positionChecker[i+1][j] == RED || positionChecker[i+1][j] == RED_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == WHITE && positionChecker[i+1][j-1] == RED )
+                  else if((positionChecker[i][j] == WHITE || positionChecker[i][j] == WHITE_KING) && (positionChecker[i+1][j-1] == RED || positionChecker[i+1][j-1] == RED_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if (positionChecker[i][j] == RED && positionChecker[i-1][j] == WHITE)
+                  else if ((positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING)  && (positionChecker[i-1][j] == WHITE || positionChecker[i-1][j] == WHITE_KING))
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-                  else if(positionChecker[i][j] == RED && positionChecker[i-1][j-1] == WHITE )
+                  else if((positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING) && (positionChecker[i-1][j-1] == WHITE || positionChecker[i-1][j-1] == WHITE_KING))  
                   {
                   positionChecker[i][j] = EMPTY;
                   }
