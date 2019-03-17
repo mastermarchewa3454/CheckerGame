@@ -13,7 +13,12 @@ import javax.swing.JOptionPane;
 public class Square implements ActionListener
 {
    
-   private JLabel[][] blackButtons = new JLabel[8][4];
+   /**
+	 *
+	 */
+	
+	private static final int _8 = 8;
+private JLabel[][] blackButtons = new JLabel[8][4];
    private JButton[][] whiteButtons = new JButton[8][4];
    private int[][] positionChecker = new int[8][4];
    private int[][] availablePlace = new int [8][4];
@@ -22,6 +27,8 @@ public class Square implements ActionListener
    private boolean canPlay= false; 
    private boolean WhiteWin = false;
    private boolean RedWin = false;
+   private boolean didJump = false;
+   private boolean multiJump = false;
    private int tempI, tempJ;
    private int whoIsPlay = WHITE; 
    // tempI is a an old address i
@@ -133,11 +140,11 @@ public class Square implements ActionListener
    }
    public boolean checkPlayer(int i, int j)
    {
-      if(whoIsPlay == RED && positionChecker[i][j] == RED )
+      if(whoIsPlay == RED && (positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING) )
       {
          return true;
       }
-      if(whoIsPlay == WHITE && positionChecker[i][j] == WHITE )
+      else if(whoIsPlay == WHITE && (positionChecker[i][j] == WHITE || positionChecker[i][j] == WHITE_KING))
       {
          return true;
       }
@@ -163,6 +170,12 @@ public class Square implements ActionListener
                whiteButtons[i][j].setIcon(image);
                WhiteWin = false;
             }
+            else if (positionChecker[i][j] == RED_KING)
+            {
+               ImageIcon image = new ImageIcon("red-king.png");
+               whiteButtons[i][j].setIcon(image);
+               WhiteWin = false;
+            }
             else if (positionChecker[i][j] == WHITE)
             {
                ImageIcon image = new ImageIcon("white.png");
@@ -173,12 +186,9 @@ public class Square implements ActionListener
             {
                ImageIcon image = new ImageIcon("white-king.png");
                whiteButtons[i][j].setIcon(image);
+               RedWin = false;
             }
-            else if (positionChecker[i][j] == RED_KING)
-            {
-               ImageIcon image = new ImageIcon("red-king.png");
-               whiteButtons[i][j].setIcon(image);
-            }
+            
             else if(positionChecker[i][j] == EMPTY)
             {
                ImageIcon image = new ImageIcon("empty.png");
@@ -189,8 +199,7 @@ public class Square implements ActionListener
    }
    public void resetAvailablePlaces()
    {
-      tempI=0;
-      tempJ=0;
+      
       canPlay = false;
       for (int i = 0; i < 8; i++) 
       {
@@ -206,6 +215,7 @@ public class Square implements ActionListener
    public void getAvailablePlaces(int i, int j)
    {
       canPlay = true;
+      
       if (positionChecker[i][j] == RED)
             {
                movingDown(i,j);
@@ -214,16 +224,40 @@ public class Square implements ActionListener
             {
                movingUp(i,j);
             }
+     
+      if(positionChecker[i][j] == RED_KING || positionChecker[i][j] == WHITE_KING )
+            {
+               movingDown(i, j);
+               movingUp(i,j);
+            }
+      paint();
+   }
+   public void noPaintgetAvailablePlaces(int i, int j)
+   {
+      canPlay = true;
+      if (positionChecker[i][j] == RED)
+            {
+               movingDown(i,j);
+            }
+      if (positionChecker[i][j] == WHITE)
+            {
+               movingUp(i,j);
+            }
+      if(positionChecker[i][j] == RED_KING || positionChecker[i][j] == WHITE_KING )
+      {
+         movingDown(i, j);
+         movingUp(i,j);
+      }
    }
    public void movingDown(int i, int j)
    {
-      if (i%2 == 0)
+      if (i%2 == 0 && i<8)
       {
          if (positionChecker[i+1][j] == EMPTY)
          {
             availablePlace[i+1][j] =1;
          }
-         if (positionChecker[i+1][j] == WHITE)
+         if (positionChecker[i+1][j] == WHITE || positionChecker[i+1][j] == WHITE_KING)
          {
             if (j!=0)
             {
@@ -239,7 +273,7 @@ public class Square implements ActionListener
             {
                availablePlace[i+1][j+1] =1;
             }
-            if (positionChecker[i+1][j+1] == WHITE)
+            if (positionChecker[i+1][j+1] == WHITE || positionChecker[i+1][j] == WHITE_KING)
             {
                if(canJump(i+2,j+1) == true)
                {
@@ -247,15 +281,14 @@ public class Square implements ActionListener
                }
             }
          }
-         
       }
-      if (i%2 == 1)
+      if (i%2 == 1 && i<8)
       {
          if (positionChecker[i+1][j] == EMPTY)
          {
             availablePlace[i+1][j] =1;      
          }
-         if(positionChecker[i+1][j] == WHITE)
+         if(positionChecker[i+1][j] == WHITE || positionChecker[i+1][j] == WHITE_KING)
          {
             if(j!=3)
             {
@@ -264,7 +297,6 @@ public class Square implements ActionListener
                   removeElement[i+1][j] = 1;
                }
             }
-            
          }
          if(j!=0)
          {
@@ -272,27 +304,25 @@ public class Square implements ActionListener
             {
                availablePlace[i+1][j-1] =1;
             }
-            if (positionChecker[i+1][j-1] == WHITE)
+            if (positionChecker[i+1][j-1] == WHITE || positionChecker[i+1][j] == WHITE_KING)
             {
-               if(canJump(i+2,j-1) == true);
+               if(canJump(i+2,j-1) == true)
                {
                   removeElement[i+1][j-1] =1;
                }
             } 
          }
-         
       }
-      paint();
    }
    public void movingUp(int i, int j)
    {
-      if (i%2 == 0)
+      if (i%2 == 0 && i>=0)
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
             availablePlace[i-1][j] =1;
          }
-         if (positionChecker[i-1][j] == RED)
+         if (positionChecker[i-1][j] == RED || positionChecker[i][j] == RED_KING)
          {
             if(canJump(i-2,j-1) == true)
             {
@@ -305,7 +335,7 @@ public class Square implements ActionListener
                {
                   availablePlace[i-1][j+1] =1;
                }
-               if (positionChecker[i-1][j+1] == RED)
+               if (positionChecker[i-1][j+1] == RED || positionChecker[i][j] == RED_KING)
                {
                   if(canJump(i-2,j+1) == true)
                   {
@@ -314,22 +344,21 @@ public class Square implements ActionListener
                }
             }
       }
-      if (i%2 == 1)
+      if (i%2 == 1 && i>=0)
       {
          if (positionChecker[i-1][j] == EMPTY)
          {
             availablePlace[i-1][j] =1;  
          }
-         else if (positionChecker[i-1][j] == RED)
+         if (positionChecker[i-1][j] == RED || positionChecker[i][j] == RED_KING)
          {
             if (j!=3)
             {
-               if(canJump(i-2,j+1) ==true)
+               if(canJump(i-2,j+1) == true)
                {
                   removeElement[i-1][j] = 1;
                }
             }
-            
          }
          if (j!=0) 
          {
@@ -337,7 +366,7 @@ public class Square implements ActionListener
             {
                availablePlace[i-1][j-1] =1;
             }
-            else if (positionChecker[i-1][j-1] == RED)
+            if (positionChecker[i-1][j-1] == RED || positionChecker[i][j] == RED_KING)
             {
                if(canJump(i-2,j-1) == true)
                {
@@ -346,8 +375,80 @@ public class Square implements ActionListener
             }
          }
       }
-      paint();
    }
+   /*
+   public void kingMoves1(int i, int j)
+   {
+      while(i!=7)
+      {
+         i++;
+         kingMovesAvailablePlaces(i, j);
+         if(j!=3 && i%2 ==0)
+         {
+            j++;
+         }
+         
+      }
+   }
+   public void kingMoves2(int i, int j)
+   {
+      while(i!=7)
+      {
+         i++;
+         kingMovesAvailablePlaces(i, j);
+         if(j!=0 && i%2 ==0)
+         {
+            j--;
+         }
+         
+      }
+   }
+   public void kingMoves3(int i, int j)
+   {
+      while(i!=0)
+      {
+         i--;
+         kingMovesAvailablePlaces(i, j);
+         if(j!=0 && i%2 ==0)
+         {
+            j--;
+         }
+         
+      }
+   }
+   public void kingMoves4(int i, int j)
+   {
+      while(i!=0)
+      {
+         i--;
+         kingMovesAvailablePlaces(i, j);
+         if(j!=3 && i%2 ==0)
+         {
+            j++;
+         }
+      }
+   }
+   public void kingMovesAvailablePlaces(int i, int j)
+   {
+      
+         if(positionChecker[i][j] == EMPTY)
+            {
+            availablePlace[i][j] = 1;
+            }
+      
+        
+         if(positionChecker[i][j-1] == EMPTY)
+            {
+               availablePlace[i][j-1] = 1;
+            }
+         
+         if(positionChecker[i][j+1] == EMPTY)
+            {
+            availablePlace[i][j+1] = 1;
+            }
+         
+   }
+   */
    public void moveTo(int i, int j, int tempI, int tempJ)
    {
       int temp = positionChecker[tempI][tempJ];
@@ -358,19 +459,23 @@ public class Square implements ActionListener
       RedWin = true;
       checkKing(i,j);
       resetAvailablePlaces();
+      checkMultiJumps(i,j);
+      didJump = false;
       checkWinning();
       changePlayer();
    }
    public boolean canJump(int i, int j)
    {
-      if(positionChecker[i][j] == 0 && i<8 && i>=0 && j>=0 && j<4)
+      if(positionChecker[i][j] == 0 && i<_8 && i>=0 && j>=0 && j<4)
       {
          availablePlace[i][j] = 1;
+         multiJump = true;
          return true;
       }
       else
-      return false;
-
+      {
+         return false;
+      }
    }
    public void removePiece()
    {
@@ -417,7 +522,8 @@ public class Square implements ActionListener
                   {
                   positionChecker[i][j] = EMPTY;
                   }
-               } 
+               }
+               didJump = true; 
             }
          }
       }
@@ -426,16 +532,15 @@ public class Square implements ActionListener
    {
       if(positionChecker[i][j] == RED && i==7)
       {
-         positionChecker[i][j] = WHITE_KING;
+         positionChecker[i][j] = RED_KING;
       }
       if (positionChecker[i][j] == WHITE && i==0)
       {
-         positionChecker[i][j] = RED_KING;
+         positionChecker[i][j] = WHITE_KING;
       }
    }
    public void checkWinning()
-   {
-      
+   { 
       if(RedWin == true)
       {
          JOptionPane.showMessageDialog(null, "Game over, red won");
@@ -443,6 +548,21 @@ public class Square implements ActionListener
       if(WhiteWin == true)
       {
          JOptionPane.showMessageDialog(null, "Game over, white won");
+      }
+   }
+   public void checkMultiJumps(int i, int j)
+   {
+      if(didJump == true)
+      {
+         multiJump = false;
+         noPaintgetAvailablePlaces(i, j);
+         if(multiJump == true)
+         {
+            resetAvailablePlaces();
+            tempI=i;
+            tempJ=j;
+            getAvailablePlaces(i,j);
+         }
       }
    }
 }
