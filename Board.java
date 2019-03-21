@@ -14,6 +14,7 @@ public class Board extends JFrame
    private JPanel panel = new JPanel();          // the panel for the board
    private int col = 8;                          // the number of columns in board (needed to setup squares)
    private int row = 4;                          // the number of rows in board (needed to setup squares)
+
    public Board()
    {
       Square square = new Square();                            // importing a square class to board
