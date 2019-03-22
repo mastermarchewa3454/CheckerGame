@@ -17,22 +17,23 @@ public class Board extends JFrame
 
    public Board()
    {
-      Square square = new Square();                            // importing a square class to board
-      JLabel[][] blackButtons = square.getblackButtons();      // importing a black-nonplay buttons
-      JButton[][] whiteButtons = square.getwhiteButtons();     // importing a white buttons which play
-      panel.setLayout(new GridLayout(col, col));               // setting a panel throughout gridlayout
+      Square square = new Square();                            // import a square class to board
+      JLabel[][] blackButtons = square.getblackButtons();      // import a black-nonplay buttons
+      JButton[][] whiteButtons = square.getwhiteButtons();     // import a white buttons which play
+      panel.setLayout(new GridLayout(col, col));               // set a panel throughout gridlayout
       setResizable(false);                                     // blocking ability to changing a size of the board
       panel.setVisible(true);                                  // make panel visible
-      setSize(700, 700);                                       // setting a size for panel
-      square.setSquare();                                      // painting squares from Square class
+      setSize(700, 700);                                       // set a size for panel
+      square.setSquare();                                      // paint squares from Square class
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);          
-      setVisible(true);                                        // making the whole board visible
+      setVisible(true);                                        // make the whole board visible
 
       /** 
-       * Adding all black buttons (JLabel) to panel
-       * Adding all white buttons (JButton) to panel
-       * For the even columns black button is setup first
-       * For the odd columns white button is setup first
+       * Constructor. Create a new instance of a Board.
+       * Add all black buttons (JLabel) to panel.
+       * Add all white buttons (JButton) to panel.
+       * For the even columns black button is setup first.
+       * For the odd columns white button is setup first.
       */
       for (int i = 0; i < col; i++) 
       {

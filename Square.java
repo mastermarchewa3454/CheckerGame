@@ -39,23 +39,43 @@ public class Square implements ActionListener
    private int tempI, tempJ;                                                    // tempI, tempJ are old addresses of i and j
    private int whoIsPlay = WHITE;                                               // decide who plays at the moment (white always plays first)
  
+   /**
+    * Obtains the current JLabel blackbutton
+    * @return the black button within Board class to later be used for setting black non-play button on the Board
+    */
    public JLabel[][] getblackButtons() {
       return blackButtons;
 
    }
 
+   /**
+    * Obtains the current JButton whitebutton
+    * @return the white button within Board class to later be used for setting white playable button on the Board
+    */
    public JButton[][] getwhiteButtons() {
       return whiteButtons;
    }
 
+   /**
+   * Moves the current position of this black Button to the given co-ordinates
+   * @param x the new black button of this Square within Board
+   */
    public void setblackButtons(JLabel[][] bb) {
       this.blackButtons = bb;
    }
 
+   /**
+   * Moves the current position of this white Button to the given co-ordinates
+   * @param x the new white button of this Square within Board
+   */
    public void setwhiteButtons(JButton[][] wb) {
       this.whiteButtons = wb;
    }
    
+   /**
+    * Declare all elements of black and white buttons in array
+    * Add ActionListener for white buttons only
+    */
    public void setSquare() 
    {
      
@@ -66,7 +86,6 @@ public class Square implements ActionListener
             ImageIcon im = new ImageIcon("empty2.png");
             blackButtons[i][j] = new JLabel(im);
           }
-         
       }
       for (int i = 0; i < row; i++) 
       {
@@ -81,11 +100,13 @@ public class Square implements ActionListener
              }
              whiteButtons[i][j].addActionListener(this);
         }
-         
-         
       }
    }
 
+   /**
+    * For the first 3 rows and last 3 rows set pieces
+    * @param i and j are the addresses of piece on the board
+    */
    public void setPieces(int i, int j)
    {
       
@@ -102,6 +123,13 @@ public class Square implements ActionListener
             positionChecker[i][j] = RED;
          }
    }
+
+   /**
+    * Ability to click a button
+    * At first it resets available places and gets available places
+    * If the available place is shown, piece can move or jump
+    * If there is no available places reset available places and repeat the process
+    */
    public void actionPerformed(ActionEvent e) 
    {
       JButton src = (JButton) e.getSource();
@@ -111,7 +139,7 @@ public class Square implements ActionListener
          {
             if (src==whiteButtons[i][j] ) 
             {
-               if (canPlay == false && checkPlayer(i,j) == true)
+               if (canPlay == false && checkPlayer(i,j) == true)          // check who should play
                {
                   resetAvailablePlaces();
                   tempI = i;
@@ -131,6 +159,10 @@ public class Square implements ActionListener
    
       }
    }
+
+   /**
+    * Changes a player after move
+    */
    public void changePlayer()
    {
       if(whoIsPlay == RED)
@@ -142,6 +174,12 @@ public class Square implements ActionListener
          whoIsPlay = RED;
       }
    }
+
+   /**
+    * The player can only play if its turn.
+    * CheckPlayer is used at the moment of getting available moves.
+    * @param i and j are the rows and columns of button which was clicked.
+    */
    public boolean checkPlayer(int i, int j)
    {
       if(whoIsPlay == RED && (positionChecker[i][j] == RED || positionChecker[i][j] == RED_KING) )
@@ -157,6 +195,12 @@ public class Square implements ActionListener
          return false;
       }
    }
+
+   /**
+    * Depends on what is on the position on the button, paint sets proper icon.
+    * WhiteWin boolean is used to show if there is any white piece. If it is not, red wins.
+    * RedWin boolean is used to show if there is any red piece. If it is not, white wins. 
+    */
    public void paint()
    {
       for (int i = 0; i < row; i++) 
@@ -192,7 +236,6 @@ public class Square implements ActionListener
                whiteButtons[i][j].setIcon(image);
                RedWin = false;
             }
-            
             else if(positionChecker[i][j] == EMPTY)
             {
                ImageIcon image = new ImageIcon("empty.png");
@@ -201,9 +244,13 @@ public class Square implements ActionListener
          }
       }
    }
+
+   /**
+    * Reset available places after each move and in case of clicking on unavailable place to move.
+    * Then paint to remove available places from the screen.
+    */
    public void resetAvailablePlaces()
    {
-      
       canPlay = false;
       for (int i = 0; i < row; i++) 
       {
@@ -216,6 +263,14 @@ public class Square implements ActionListener
       paint();
    }
    
+   /**
+    * Get available places for the clicked button based on its position.
+    * @param i and j are addresses of piece which was clicked.
+    * Red elements are moving only down.
+    * White elements are moving only up.
+    * Kings can move up and down.
+    * Paint available places.
+    */
    public void getAvailablePlaces(int i, int j)
    {
       canPlay = true;
@@ -233,10 +288,15 @@ public class Square implements ActionListener
             {
                movingDown(i, j);
                movingUp(i,j);
-               
             }
       paint();
    }
+
+   /**
+    * Get available places without painting them.
+    * @param i and j are addresses of piece which was clicked.
+    * Used for checking more than one jumps at turn.
+    */
    public void noPaintgetAvailablePlaces(int i, int j)
    {
       canPlay = true;
@@ -253,6 +313,15 @@ public class Square implements ActionListener
          movingDown(i, j);
          movingUp(i,j);
       }
+      
+   /**
+    * Move down checking.
+    * @param i and j are addresses of piece which was clicked.
+    * If the position row down is empty then there is an ability to move there.
+    * If the position row down is set by white element or king, check if jump is possible.
+    * Detail check for the even and odd rows.
+    * Check for last and first piece in the row. 
+    */
    }
    public void movingDown(int i, int j)
    {
@@ -272,7 +341,7 @@ public class Square implements ActionListener
                }
             }  
          }
-         if (j!=3)
+         if (j!=col-1)
          {
             if (positionChecker[i+1][j+1] == EMPTY)
             {
@@ -295,7 +364,7 @@ public class Square implements ActionListener
          }
          if(positionChecker[i+1][j] == WHITE || positionChecker[i+1][j] == WHITE_KING)
          {
-            if(j!=3)
+            if(j!=col-1)
             {
                if(canJump(i+2,j+1) == true)
                {
@@ -319,6 +388,15 @@ public class Square implements ActionListener
          }
       }
    }
+
+   /**
+    * Move up checking.
+    * @param i and j are addresses of piece which was clicked.
+    * If the position row above is empty then there is an ability to move there.
+    * If the position row above is set by white element or king, check if jump is possible.
+    * Detail check for the even and odd rows.
+    * Check for last and first piece in the row. 
+    */
    public void movingUp(int i, int j)
    {
       if (i%2 == 0 && i>=0)
@@ -334,7 +412,7 @@ public class Square implements ActionListener
                removeElement[i-1][j] =1;
             }
          }
-         if(j!=3)
+         if(j!=col-1)
             {
                if (positionChecker[i-1][j+1] == EMPTY)
                {
@@ -357,7 +435,7 @@ public class Square implements ActionListener
          }
          if (positionChecker[i-1][j] == RED || positionChecker[i-1][j] == RED_KING)
          {
-            if (j!=3)
+            if (j!=col-1)
             {
                if(canJump(i-2,j+1) == true)
                {
@@ -382,6 +460,17 @@ public class Square implements ActionListener
       }
    }
    
+   /**
+    * Move the square to new location.
+    * @param i and j are addresses of piece where piece will be moved.
+    * @param tempI and tempJ are addresses of piece from previous location.
+    * Get the positionChecker of previous location to the new one.
+    * Remove piece if the jump was made.
+    * Check if after a move, piece becomes a king.
+    * Check if piece can jump more than once.
+    * Check if there is endgame by checking if red or white have any pieces.
+    * Change a player after move.
+    */
    public void moveTo(int i, int j, int tempI, int tempJ)
    {
       int temp = positionChecker[tempI][tempJ];
@@ -397,7 +486,13 @@ public class Square implements ActionListener
       checkWinning();
       changePlayer();
    }
-   public boolean canJump(int i, int j)
+
+   /**
+    * Check if piece can make jump over opposite piece and beat it.
+    * @param i and j are addresses of position where piece can jump.
+    * if it can jump, set it as available place. 
+    */
+   public  boolean canJump(int i, int j)
    {
       if(positionChecker[i][j] == 0 && i<row && i>=0 && j>=0 && j<col)
       {
@@ -410,6 +505,11 @@ public class Square implements ActionListener
          return false;
       }
    }
+
+   /**
+    * Remove element from the board if that element was beaten
+    * Check location and positionChecker of element which jumped
+    */
    public void removePiece()
    {
       for (int i=0; i<row; i++)
@@ -461,6 +561,11 @@ public class Square implements ActionListener
          }
       }
    }
+
+   /**
+    * Check king.
+    * @param i and j are addresses of position of piece which can become a king.
+    */
    public void checkKing(int i, int j)
    {
       if(positionChecker[i][j] == RED && i==row-1)
@@ -472,6 +577,11 @@ public class Square implements ActionListener
          positionChecker[i][j] = WHITE_KING;
       }
    }
+
+   /**
+    * If boolean RedWin is true - show a message that red won
+    * If boolean WhiteWin is true - show a message that white won
+    */
    public void checkWinning()
    { 
       if(RedWin == true)
@@ -483,6 +593,14 @@ public class Square implements ActionListener
          JOptionPane.showMessageDialog(null, "Game over, white won");
       }
    }
+
+   /**
+    * Check if there is possibility to make more than one jump.
+    * @param i and j are addresses of piece which can make more than one jump.
+    * check if that piece has already made a jump
+    * get available places without painting them
+    * if it can jump - then make a jump
+    */
    public void checkMultiJumps(int i, int j)
    {
       if(didJump == true)
